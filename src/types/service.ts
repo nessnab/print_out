@@ -1,7 +1,8 @@
 export interface Service {
-  id: string
+  id: number
   name: string
   price: number
   every: number
   unit: "page" | "item"
+  is_active: boolean
 }
