@@ -1,99 +1,292 @@
-import { useEffect, useState } from "react"
+interface NewOrderFormProps {
+  onOrderCreated: () => void
+}
+
+import { useEffect, useMemo, useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+
 import { getServices } from "../api"
 import type { Service } from "@/types/service"
 
-export default function NewOrderForm() {
-  const [services, setServices] = useState<Service[]>([])
-  const [customerName, setCustomerName] = useState("")
+import {
+  createOrder,
+  createOrderItems,
+} from "@/features/orders/api"
 
-  // const [quantity, setQuantity] = useState(1)
+type OrderItem = {
+  serviceId: string
+  quantity: number | ""
+}
+
+function calculateSubtotal(
+  quantity: number,
+  price: number,
+  every: number
+) {
+  return Math.ceil(quantity / every) * price
+}
+
+export default function NewOrderForm({
+  onOrderCreated,
+}: NewOrderFormProps) {  
+  
+  const [services, setServices] = useState<Service[]>([])
+
+  const [customerName, setCustomerName] = useState("")
   const [isPaid, setIsPaid] = useState(true)
 
-  const [item, setItem] = useState({
-    serviceId: "",
-    quantity: "",
-  })
+  const [items, setItems] = useState<OrderItem[]>([
+    {
+      serviceId: "",
+      quantity: "",
+    },
+  ])
 
   useEffect(() => {
     loadServices()
   }, [])
 
   async function loadServices() {
-  try {
-    const data = await getServices()
-
-    console.log("Services:", data)
-
-    setServices(data)
-  } catch (error) {
-    console.error(error)
-  }
+    try {
+      const data = await getServices()
+      setServices(data)
+    } catch (error) {
+      console.error(error)
+    }
   }
 
-  const selectedService = services.find(
-    (service) => service.id === item.serviceId
+  function updateItem(
+    index: number,
+    field: keyof OrderItem,
+    value: string | number | ""
+  ) {
+    setItems((prev) =>
+      prev.map((item, i) =>
+        i === index
+          ? { ...item, [field]: value }
+          : item
+      )
+    )
+  }
+
+  function addItem() {
+    setItems((prev) => [
+      ...prev,
+      {
+        serviceId: "",
+        quantity: "",
+      },
+    ])
+  }
+
+  function removeItem(index: number) {
+    if (items.length === 1) return
+
+    setItems((prev) =>
+      prev.filter((_, i) => i !== index)
+    )
+  }
+
+  // ⭐ One source of truth
+  const calculatedItems = useMemo(() => {
+    return items
+      .map((item) => {
+        const service = services.find(
+          (s) => s.id === item.serviceId
+        )
+
+        if (!service || item.quantity === "") {
+          return null
+        }
+
+        return {
+          ...item,
+          service,
+          subtotal: calculateSubtotal(
+            item.quantity,
+            service.price,
+            service.every
+          ),
+        }
+      })
+      .filter(
+        (item): item is NonNullable<typeof item> =>
+          item !== null
+      )
+  }, [items, services])
+
+  const total = calculatedItems.reduce(
+    (sum, item) => sum + item.subtotal,
+    0
   )
-  
-  const subtotal = selectedService
-    ? Math.ceil(item.quantity / selectedService.every) *
-      selectedService.price
-    : 0
+
+  async function handleSave() {
+    try {
+      if (calculatedItems.length === 0) {
+        alert("Please add at least one service.")
+        return
+      }
+
+      const order = await createOrder({
+        customer_name: customerName,
+        order_date: new Date().toISOString(),
+        total,
+        is_paid: isPaid,
+      })
+
+      await createOrderItems(
+        calculatedItems.map((item) => ({
+          order_id: order.id,
+          service_id: item.service.id,
+          quantity: item.quantity,
+          unit_price: item.service.price,
+          subtotal: item.subtotal,
+        }))
+      )
+
+      onOrderCreated()
+
+      alert("Order saved!")
+
+      setCustomerName("")
+      setIsPaid(true)
+      setItems([
+        {
+          serviceId: "",
+          quantity: "",
+        },
+      ])
+    } catch (err) {
+      console.error(err)
+      alert("Failed to save order")
+    }
+  }
 
   return (
-    <Card className="p-5">
-      <h2 className="font-semibold">
+    <Card className="space-y-5 p-5">
+      <h2 className="text-lg font-semibold">
         New Order
       </h2>
+
       <Input
         placeholder="Customer name (optional)"
         value={customerName}
-        onChange={(e) => setCustomerName(e.target.value)}
+        onChange={(e) =>
+          setCustomerName(e.target.value)
+        }
       />
 
-      <select
-        className="w-full rounded-md border p-2"
-        value={item.serviceId}
-        onChange={(e) =>
-          setItem({
-            ...item,
-            serviceId: e.target.value,
-          })
-        }
-      >
-        <option value="">Select Service</option>
+      {items.map((item, index) => {
+        const calculated = calculatedItems.find(
+          (c) => c.serviceId === item.serviceId
+        )
 
-        {services.map((service) => (
-          <option
-            key={service.id}
-            value={service.id}
+        return (
+          <div
+            key={index}
+            className="space-y-3 rounded-xl border p-4"
           >
-            {service.name}
-          </option>
-        ))}
-      </select>
+            <select
+              className="w-full rounded-md border p-2"
+              value={item.serviceId}
+              onChange={(e) =>
+                updateItem(
+                  index,
+                  "serviceId",
+                  e.target.value
+                )
+              }
+            >
+              <option value="">
+                Select Service
+              </option>
 
-      <Input
-        type="number" placeholder="Quantity"
-        min={1}
-        value={item.quantity}
-        onChange={(e) =>
-          setItem({
-            ...item,
-            quantity: Number(e.target.value),
-          })
-        }
-      />
-      <div className="rounded-lg bg-muted p-4">
-        <div className="flex justify-between">
-          <span>Subtotal</span>
+              {services.map((service) => (
+                <option
+                  key={service.id}
+                  value={service.id}
+                >
+                  {service.name}
+                </option>
+              ))}
+            </select>
 
-          <span className="font-bold">
-            Rp{subtotal.toLocaleString("id-ID")}
+            <Input
+              type="number"
+              placeholder="Quantity"
+              min={1}
+              value={item.quantity}
+              onChange={(e) =>
+                updateItem(
+                  index,
+                  "quantity",
+                  e.target.value === ""
+                    ? ""
+                    : Number(e.target.value)
+                )
+              }
+            />
+
+            <div className="flex justify-between">
+              <span>Subtotal</span>
+
+              <span className="font-semibold">
+                {calculated
+                  ? `Rp${calculated.subtotal.toLocaleString("id-ID")}`
+                  : "—"}
+              </span>
+            </div>
+
+            {items.length > 1 && (
+              <Button
+                variant="destructive"
+                onClick={() =>
+                  removeItem(index)
+                }
+              >
+                Remove Service
+              </Button>
+            )}
+          </div>
+        )
+      })}
+
+      <Button
+        variant="outline"
+        onClick={addItem}
+      >
+        + Add Service
+      </Button>
+
+      <div className="rounded-xl bg-muted p-4">
+        <div className="flex justify-between text-lg font-bold">
+          <span>Total</span>
+
+          <span>
+            Rp{total.toLocaleString("id-ID")}
           </span>
         </div>
       </div>
+
+      <label className="flex items-center gap-2">
+        <input
+          type="checkbox"
+          checked={isPaid}
+          onChange={(e) =>
+            setIsPaid(e.target.checked)
+          }
+        />
+        Paid
+      </label>
+
+      <Button
+        className="w-full"
+        onClick={handleSave}
+      >
+        Save Order
+      </Button>
     </Card>
   )
 }
