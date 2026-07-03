@@ -2,51 +2,51 @@ interface SummaryCardsProps {
   orders: any[]
 }
 
-import { Card } from "@/components/ui/card";
-
-export default function SummaryCards({ orders }: SummaryCardsProps) {
-
+export default function SummaryCards({
+  orders,
+}: SummaryCardsProps) {
   const revenue = orders.reduce(
     (sum, order) => sum + Number(order.total),
-  0
+    0
   )
 
-  const unpaid = orders.filter(
-    (o) => !o.is_paid
+  const orderCount = orders.length
+
+  const unpaidCount = orders.filter(
+    (order) => !order.is_paid
   ).length
 
-  const orderCount = orders.length
   return (
-    <div className="mt-6 grid gap-3">
-      <Card className="p-4">
-        <p className="text-sm text-muted-foreground">
-          Revenue Today
+    <div className="grid grid-cols-3 gap-3">
+      <div className="rounded-xl border bg-white p-4">
+        <p className="text-xs text-muted-foreground">
+          Revenue
         </p>
 
-        <h2 className="mt-2 text-2xl font-bold">
-          Rp0
-        </h2>
-      </Card>
+        <p className="mt-1 text-lg font-bold">
+          Rp{revenue.toLocaleString("id-ID")}
+        </p>
+      </div>
 
-      <Card className="p-4">
-        <p className="text-sm text-muted-foreground">
-          Expenses Today
+      <div className="rounded-xl border bg-white p-4">
+        <p className="text-xs text-muted-foreground">
+          Orders
         </p>
 
-        <h2 className="mt-2 text-2xl font-bold">
-          Rp0
-        </h2>
-      </Card>
+        <p className="mt-1 text-lg font-bold">
+          {orderCount}
+        </p>
+      </div>
 
-      <Card className="p-4">
-        <p className="text-sm text-muted-foreground">
-          Profit Today
+      <div className="rounded-xl border bg-white p-4">
+        <p className="text-xs text-muted-foreground">
+          Unpaid
         </p>
 
-        <h2 className="mt-2 text-2xl font-bold">
-          Rp0
-        </h2>
-      </Card>
+        <p className="mt-1 text-lg font-bold">
+          {unpaidCount}
+        </p>
+      </div>
     </div>
-  );
+  )
 }
