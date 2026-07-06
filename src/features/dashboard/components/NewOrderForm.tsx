@@ -10,6 +10,15 @@ import { Button } from "@/components/ui/button"
 import { getServices } from "../api"
 import type { Service } from "@/types/service"
 
+import { toast } from "sonner"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
 import {
   createOrder,
   createOrderItems,
@@ -36,6 +45,8 @@ export default function NewOrderForm({
 
   const [customerName, setCustomerName] = useState("")
   const [isPaid, setIsPaid] = useState(true)
+  
+  const [isSaving, setIsSaving] = useState(false)
 
   const [items, setItems] = useState<OrderItem[]>([
     {
@@ -147,8 +158,16 @@ export default function NewOrderForm({
       )
 
       onOrderCreated()
+      setIsSaving(true)
 
-      alert("Order saved!")
+      try {
+
+      }
+      finally{
+          setIsSaving(false)
+      }
+
+      toast.success("Order saved!")
 
       setCustomerName("")
       setIsPaid(true)
@@ -160,7 +179,7 @@ export default function NewOrderForm({
       ])
     } catch (err) {
       console.error(err)
-      alert("Failed to save order")
+      toast.error("Failed to save order")
     }
   }
 
@@ -188,30 +207,29 @@ export default function NewOrderForm({
             key={index}
             className="space-y-3 rounded-xl border p-4"
           >
-            <select
-              className="w-full rounded-md border p-2"
+            
+
+            <Select
               value={item.serviceId}
-              onChange={(e) =>
-                updateItem(
-                  index,
-                  "serviceId",
-                  e.target.value
-                )
+              onValueChange={(value) =>
+                updateItem(index, "serviceId", value)
               }
             >
-              <option value="">
-                Select Service
-              </option>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select Service" />
+              </SelectTrigger>
 
-              {services.map((service) => (
-                <option
-                  key={service.id}
-                  value={service.id}
-                >
-                  {service.name}
-                </option>
-              ))}
-            </select>
+              <SelectContent>
+                {services.map((service) => (
+                  <SelectItem
+                    key={service.id}
+                    value={service.id}
+                  >
+                    {service.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
             <Input
               type="number"
@@ -270,22 +288,12 @@ export default function NewOrderForm({
         </div>
       </div>
 
-      <label className="flex items-center gap-2">
-        <input
-          type="checkbox"
-          checked={isPaid}
-          onChange={(e) =>
-            setIsPaid(e.target.checked)
-          }
-        />
-        Paid
-      </label>
 
       <Button
-        className="w-full"
+        disabled={isSaving}
         onClick={handleSave}
       >
-        Save Order
+        {isSaving ? "Saving..." : "Save Order"}
       </Button>
     </Card>
   )
