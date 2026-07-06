@@ -9,6 +9,13 @@ export default function OrdersList({
   orders,
 }: OrdersListProps) {
 
+  function formatDate(date: string) {
+    return new Intl.DateTimeFormat("id-ID", {
+      dateStyle: "medium",
+    }).format(new Date(date))
+  }
+  console.log(orders)
+
   return (
     <Card className="p-5 space-y-3">
       <h2 className="font-semibold">
@@ -20,17 +27,18 @@ export default function OrdersList({
       )}
 
       {orders.map((order) => (
+        
         <div
           key={order.id}
           className="flex justify-between border-b pb-2"
         >
           <div>
             <p className="font-medium">
-              {order.customer_name || "Walk-in"}
+              {order.customer_name || `Order #${order.id}`}
             </p>
 
-            <p className="text-sm text-muted-foreground">
-              {order.is_paid ? "Paid" : "Unpaid"}
+            <p className="text-xs text-muted-foreground">
+              {formatDate(order.order_date)}
             </p>
           </div>
 

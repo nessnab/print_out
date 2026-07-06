@@ -55,6 +55,10 @@ export default function NewOrderForm({
     },
   ])
 
+  const [orderDate, setOrderDate] = useState(
+    new Date().toISOString().split("T")[0]
+  )
+
   useEffect(() => {
     loadServices()
   }, [])
@@ -140,13 +144,19 @@ export default function NewOrderForm({
         return
       }
 
+      const now = new Date()
+
+      const orderDateTime = new Date(
+        `${orderDate}T${now.toTimeString().slice(0, 8)}`
+      )
+
       const order = await createOrder({
         customer_name: customerName,
-        order_date: new Date().toISOString(),
+        order_date: orderDateTime.toISOString(),
         total,
         is_paid: isPaid,
       })
-
+      
       await createOrderItems(
         calculatedItems.map((item) => ({
           order_id: order.id,
@@ -194,6 +204,14 @@ export default function NewOrderForm({
         value={customerName}
         onChange={(e) =>
           setCustomerName(e.target.value)
+        }
+      />
+
+      <Input
+        type="date"
+        value={orderDate}
+        onChange={(e) =>
+          setOrderDate(e.target.value)
         }
       />
 

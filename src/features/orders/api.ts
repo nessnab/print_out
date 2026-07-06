@@ -42,6 +42,7 @@ export async function getOrders() {
     .from("orders")
     .select("*")
     .order("order_date", { ascending: false })
+    .order("created_at", { ascending: false })
 
   if (error) throw error
 
