@@ -40,7 +40,10 @@ export default function HomePage() {
         onOrderCreated={loadOrders}
       />
 
-      <OrdersList orders={orders} />
+      <OrdersList
+        orders={orders}
+        onDeleted={loadOrders}
+      />
     </main>
   )
 }
