@@ -199,21 +199,23 @@ export default function NewOrderForm({
         New Order
       </h2>
 
-      <Input
-        placeholder="Customer name (optional)"
-        value={customerName}
-        onChange={(e) =>
-          setCustomerName(e.target.value)
-        }
-      />
+      <div className="space-y-3">
+        <Input
+          placeholder="Customer name (optional)"
+          value={customerName}
+          onChange={(e) =>
+            setCustomerName(e.target.value)
+          }
+        />
 
-      <Input
-        type="date"
-        value={orderDate}
-        onChange={(e) =>
-          setOrderDate(e.target.value)
-        }
-      />
+        <Input
+          type="date"
+          value={orderDate}
+          onChange={(e) =>
+            setOrderDate(e.target.value)
+          }
+        />
+      </div>
 
       {items.map((item, index) => {
         const calculated = calculatedItems.find(

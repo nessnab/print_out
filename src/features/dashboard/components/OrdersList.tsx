@@ -1,8 +1,9 @@
-interface OrdersListProps {
-  orders: any[],
+type OrdersListProps = {
+  orders: any[]
+  period: Period
   onDeleted: () => void
 }
-
+import type { Period } from "@/types/period"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { deleteOrder } from "@/features/orders/api"
@@ -25,8 +26,16 @@ import { Trash2 } from "lucide-react"
 
 export default function OrdersList({
   orders,
+  period,
   onDeleted
 }: OrdersListProps) {
+
+  const titles = {
+    today: "Today's Orders",
+    week: "This Week",
+    month: "This Month",
+    all: "All Orders",
+  }
 
   function formatDate(date: string) {
     return new Intl.DateTimeFormat("id-ID", {
@@ -51,11 +60,12 @@ export default function OrdersList({
     }
   }
   
+  
 
   return (
     <Card className="p-5 space-y-3">
-      <h2 className="font-semibold">
-        Today's Orders
+      <h2 className="text-lg font-semibold">
+        {titles[period]}
       </h2>
 
       {orders.length === 0 && (

@@ -1,0 +1,5 @@
+export type Period =
+  | "today"
+  | "week"
+  | "month"
+  | "all"
