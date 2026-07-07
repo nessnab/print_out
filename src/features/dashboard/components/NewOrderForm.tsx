@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { Trash2 } from "lucide-react"
 
 import { getServices } from "@/features/services/api"
 import type { Service } from "@/types/service"
@@ -194,12 +195,12 @@ export default function NewOrderForm({
   }
 
   return (
-    <Card className="space-y-5 p-5">
+    <Card className="p-5">
       <h2 className="text-lg font-semibold">
         New Order
       </h2>
 
-      <div className="space-y-3">
+      <div className="space-y-1">
         <Input
           placeholder="Customer name (optional)"
           value={customerName}
@@ -225,9 +226,10 @@ export default function NewOrderForm({
         return (
           <div
             key={index}
-            className="space-y-3 rounded-xl border p-4"
+            className="space-y-1 space-x-1 rounded-xl border p-4"
           >
-            
+
+            <div className="flex space-x-1">
 
             <Select
               value={item.serviceId}
@@ -266,27 +268,31 @@ export default function NewOrderForm({
                 )
               }
             />
+            </div>
 
-            <div className="flex justify-between">
+            <div className="flex justify-between items-center px-1">
               <span>Subtotal</span>
 
+              <div className="space-x-1">
               <span className="font-semibold">
                 {calculated
                   ? `Rp${calculated.subtotal.toLocaleString("id-ID")}`
                   : "—"}
               </span>
+              {items.length > 1 && (
+                <Button
+                  variant="destructive"
+                  onClick={() =>
+                    removeItem(index)
+                  }
+                >
+                  <Trash2 />
+                </Button>
+              )}
+
+              </div>
             </div>
 
-            {items.length > 1 && (
-              <Button
-                variant="destructive"
-                onClick={() =>
-                  removeItem(index)
-                }
-              >
-                Remove Service
-              </Button>
-            )}
           </div>
         )
       })}

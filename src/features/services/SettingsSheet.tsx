@@ -78,20 +78,22 @@ export default function SettingsSheet() {
           updateService(service)
         )
       )
-
+      
       toast.success(
         "Settings updated!"
       )
-
+      
       setServices(editedServices)
+      await loadServices()
 
     } catch (err) {
       console.error(err)
-
+      
       toast.error(
         "Failed to save settings."
       )
     }
+    window.location.reload()
   }
   async function handleDeactivate(id: number) {
     try {
@@ -99,26 +101,26 @@ export default function SettingsSheet() {
       await loadServices()
 
       window.location.reload()
-
+      
       toast.success("Service deactivated")
     } catch (err) {
       console.error(err)
       toast.error("Failed to deactivate service")
     }
   }
-
+  
   async function handleCreateService() {
     try {
       await createService(newService)
-      console.log(newService);
       await loadServices()
-  
+      
       setNewService({
         name: "",
         price: Number,
         every: Number,
       })
-  
+      
+      window.location.reload()
       toast.success("Service added")
 
     } catch (error) {
