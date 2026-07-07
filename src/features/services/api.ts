@@ -11,3 +11,19 @@ export async function getServices() {
 
   return data
 }
+
+export async function updateService(
+  id: number,
+  price: number,
+  every: number
+) {
+  const { error } = await supabase
+    .from("services")
+    .update({
+      price,
+      every,
+    })
+    .eq("id", id)
+
+  if (error) throw error
+}

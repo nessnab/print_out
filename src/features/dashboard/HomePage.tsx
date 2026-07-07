@@ -8,6 +8,7 @@ import { useEffect, useState } from "react"
 import SummaryCards from "./components/SummaryCards"
 import NewOrderForm from "./components/NewOrderForm"
 import OrdersList from "./components/OrdersList"
+import SettingsSheet from "../services/SettingsSheet"
 
 import { getOrders } from "@/features/orders/api"
 
@@ -89,34 +90,38 @@ export default function HomePage() {
             Print Shop Dashboard
           </p>
         </div>
-        <Select
-          value={period}
-          onValueChange={(value) =>
-            setPeriod(value as Period)
-          }
-        >
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
+        <div className="flex">
+          <Select
+            value={period}
+            onValueChange={(value) =>
+              setPeriod(value as Period)
+            }
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
 
-          <SelectContent>
-            <SelectItem value="today">
-              Today
-            </SelectItem>
+            <SelectContent>
+              <SelectItem value="today">
+                Today
+              </SelectItem>
 
-            <SelectItem value="week">
-              This Week
-            </SelectItem>
+              <SelectItem value="week">
+                This Week
+              </SelectItem>
 
-            <SelectItem value="month">
-              This Month
-            </SelectItem>
+              <SelectItem value="month">
+                This Month
+              </SelectItem>
 
-            <SelectItem value="all">
-              All Time
-            </SelectItem>
-          </SelectContent>
-        </Select>
+              <SelectItem value="all">
+                All Time
+              </SelectItem>
+            </SelectContent>
+          </Select>
+
+          <SettingsSheet />
+        </div>
       </header>
 
 

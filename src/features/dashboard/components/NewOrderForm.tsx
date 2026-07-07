@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
-import { getServices } from "../api"
+import { getServices } from "@/features/services/api"
 import type { Service } from "@/types/service"
 
 import { toast } from "sonner"
