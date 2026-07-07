@@ -13,6 +13,28 @@ export async function getServices() {
   return data
 }
 
+export async function createService(
+  service: {
+    name: string
+    price: number
+    every: number
+    // unit: "page" | "item"
+  }
+) {
+  const { data, error } = await supabase
+    .from("services")
+    .insert({
+      ...service,
+      is_active: true,
+    })
+    .select()
+    .single()
+
+  if (error) throw error
+
+  return data
+}
+
 export async function updateService(
   service: Service
 ) {

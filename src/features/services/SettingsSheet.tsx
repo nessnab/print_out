@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react"
-import { deactivateService, getServices, updateService } from "@/features/services/api"
+import { createService, deactivateService, getServices, updateService } from "@/features/services/api"
 import type { Service } from "@/types/service"
 
 import { Settings } from "lucide-react"
 import { Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Card } from "@/components/ui/card"
 import { toast } from "sonner"
 
 import {
@@ -31,6 +32,13 @@ import {
 export default function SettingsSheet() {
   const [services, setServices] = useState<Service[]>([])
   const [editedServices, setEditedServices] = useState<Service[]>([])
+
+  const [newService, setNewService] = useState({
+    name: "",
+    price: Number,
+    every: Number,
+    // unit: "page",
+  })
 
   useEffect(() => {
     loadServices()
@@ -99,6 +107,26 @@ export default function SettingsSheet() {
     }
   }
 
+  async function handleCreateService() {
+    try {
+      await createService(newService)
+      console.log(newService);
+      await loadServices()
+  
+      setNewService({
+        name: "",
+        price: Number,
+        every: Number,
+      })
+  
+      toast.success("Service added")
+
+    } catch (error) {
+      console.error(error)
+      toast.error("Failed to add service")
+    }
+  }
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -116,6 +144,53 @@ export default function SettingsSheet() {
         </SheetHeader>
 
         <div className="min-h-0 flex-1 overflow-y-auto py-4">
+            <Card className="space-y-1 p-4">
+              <h2 className="text-base font-semibold">
+                Add New Service
+              </h2>
+              <div className="grid grid-cols-4 gap-3">
+                <Input
+                  placeholder="Service name"
+                  value={newService.name}
+                  onChange={(e) =>
+                    setNewService({
+                      ...newService,
+                      name: e.target.value,
+                    })
+                  }
+                />
+                <Input
+                  type="number"
+                  placeholder="Price"
+                  value={newService.price}
+                  onChange={(e) =>
+                    setNewService({
+                      ...newService,
+                      price: Number(e.target.value),
+                    })
+                  }
+                />
+
+                <Input
+                  type="number"
+                  placeholder="Every"
+                  value={newService.every}
+                  onChange={(e) =>
+                    setNewService({
+                      ...newService,
+                      every: Number(e.target.value),
+                    })
+                  }
+                />
+                <Button
+                  className=""
+                  onClick={handleCreateService}
+                >
+                  Add Service
+                </Button>
+              </div>
+            </Card>
+
           <div className="space-y-1">
           {editedServices.map((service) => (
             <div
