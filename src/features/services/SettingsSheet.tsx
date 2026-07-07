@@ -37,8 +37,8 @@ export default function SettingsSheet() {
 
   function updateServiceField(
     id: number,
-    field: "price" | "every",
-    value: number
+    field: keyof Service,
+    value: string | number | boolean
   ) {
     setEditedServices((prev) =>
       prev.map((service) =>
@@ -56,11 +56,7 @@ export default function SettingsSheet() {
     try {
       await Promise.all(
         editedServices.map((service) =>
-          updateService(
-            service.id,
-            service.price,
-            service.every
-          )
+          updateService(service)
         )
       )
 
@@ -87,7 +83,7 @@ export default function SettingsSheet() {
       </SheetTrigger>
 
       <SheetContent side="bottom"
-        className="mx-auto flex  w-full max-w-xl flex-col rounded-t-2xl">
+        className="mx-auto flex w-full max-w-xl flex-col rounded-t-2xl">
         <SheetHeader className="shrink-0">
           <SheetTitle>
             Manage Services
@@ -99,11 +95,24 @@ export default function SettingsSheet() {
           {editedServices.map((service) => (
             <div
               key={service.id}
-              className="space-y-3 rounded-xl border p-4"
+              className="flex space-y-3 rounded-xl border p-4"
             >
-              <h3 className="font-semibold">
-                {service.name}
-              </h3>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
+                  Name
+                </label>
+
+                <Input
+                  value={service.name}
+                  onChange={(e) =>
+                    updateServiceField(
+                      service.id,
+                      "name",
+                      e.target.value
+                    )
+                  }
+                />
+              </div>
 
               <div>
                 <label className="text-sm">

@@ -1,3 +1,4 @@
+import type { Service } from "@/types/service"
 import { supabase } from "@/lib/supabase"
 
 export async function getServices() {
@@ -13,17 +14,18 @@ export async function getServices() {
 }
 
 export async function updateService(
-  id: number,
-  price: number,
-  every: number
+  service: Service
 ) {
   const { error } = await supabase
     .from("services")
     .update({
-      price,
-      every,
+      name: service.name,
+      price: service.price,
+      every: service.every,
+      unit: service.unit,
+      is_active: service.is_active,
     })
-    .eq("id", id)
+    .eq("id", service.id)
 
   if (error) throw error
 }
