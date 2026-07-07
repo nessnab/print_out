@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { deleteOrder } from "@/features/orders/api"
 import { toast } from "sonner"
+import { Trash2 } from "lucide-react"
 
 import {
   AlertDialog,
@@ -21,7 +22,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
-import { Trash2 } from "lucide-react"
 
 
 export default function OrdersList({

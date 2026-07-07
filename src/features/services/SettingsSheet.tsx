@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react"
-import { getServices } from "@/features/services/api"
-import { updateService } from "@/features/services/api"
+import { deactivateService, getServices, updateService } from "@/features/services/api"
 import type { Service } from "@/types/service"
-// import { updateService } from "../services/api"
 
 import { Settings } from "lucide-react"
+import { Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
@@ -16,6 +15,18 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog" 
 
 export default function SettingsSheet() {
   const [services, setServices] = useState<Service[]>([])
@@ -74,6 +85,20 @@ export default function SettingsSheet() {
       )
     }
   }
+  async function handleDeactivate(id: number) {
+    try {
+      await deactivateService(id)
+      await loadServices()
+
+      window.location.reload()
+
+      toast.success("Service deactivated")
+    } catch (err) {
+      console.error(err)
+      toast.error("Failed to deactivate service")
+    }
+  }
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -91,11 +116,11 @@ export default function SettingsSheet() {
         </SheetHeader>
 
         <div className="min-h-0 flex-1 overflow-y-auto py-4">
-          <div className="space-y-4">
+          <div className="space-y-1">
           {editedServices.map((service) => (
             <div
               key={service.id}
-              className="flex space-y-3 rounded-xl border p-4"
+              className="flex space-y-1 p-3"
             >
               <div className="space-y-2">
                 <label className="text-sm font-medium">
@@ -149,6 +174,41 @@ export default function SettingsSheet() {
                   }
                 />
               </div>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    className="self-end"
+                    variant="destructive"
+                    size="icon"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </AlertDialogTrigger>
+
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Deactivate "{service.name}"?
+                    </AlertDialogTitle>
+
+                    <AlertDialogDescription>
+                      This service will no longer appear when creating new orders. Existing orders will remain unchanged.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>
+                      Cancel
+                    </AlertDialogCancel>
+
+                    <AlertDialogAction
+                      onClick={() => handleDeactivate(service.id)}
+                    >
+                      Deactivate
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           ))}
           </div>

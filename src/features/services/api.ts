@@ -29,3 +29,14 @@ export async function updateService(
 
   if (error) throw error
 }
+
+export async function deactivateService(id: number) {
+  const { error } = await supabase
+    .from("services")
+    .update({
+      is_active: false,
+    })
+    .eq("id", id)
+
+  if (error) throw error
+}
