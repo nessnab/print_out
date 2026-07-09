@@ -5,12 +5,18 @@ type Period =
 | "all"
 import { useEffect, useState } from "react"
 
-import SummaryCards from "./components/SummaryCards"
-import NewOrderForm from "./components/NewOrderForm"
-import OrdersList from "./components/OrdersList"
+import SummaryCards from "@/features/dashboard/components/SummaryCards"
+
+import NewOrderForm from "../orders/components/NewOrderForm"
+import OrdersList from "../orders/components/OrdersList"
+
+import NewExpenseDialog from "../expenses/components/NewExpenseDialog"
+import ExpensesList from "@/features/expenses/components/ExpensesList"
+
 import SettingsSheet from "../services/SettingsSheet"
 
 import { getOrders } from "@/features/orders/api"
+import { getExpenses } from "@/features/expenses/api"
 
 import {
   Select,
@@ -20,9 +26,16 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs"
+
 export default function HomePage() {
   const [orders, setOrders] = useState<any[]>([])
-
+  const [expenses, setExpenses] = useState<Expense[]>([])
   const [period, setPeriod] = useState<Period>("today")
 
   useEffect(() => {
@@ -38,6 +51,19 @@ export default function HomePage() {
     try {
       const data = await getOrders()
       setOrders(data)
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+    useEffect(() => {
+    loadExpenses()
+  }, [])
+
+  async function loadExpenses() {
+    try {
+      const data = await getExpenses()
+      setExpenses(data)
     } catch (err) {
       console.error(err)
     }
@@ -127,15 +153,47 @@ export default function HomePage() {
 
       <SummaryCards orders={filteredOrders} />
 
-      <NewOrderForm
-        onOrderCreated={loadOrders}
-      />
+      <div className="gap-3">
+        <NewOrderForm
+          onOrderCreated={loadOrders}
+        />
+        
+        <NewExpenseDialog
+          onExpenseCreated={loadExpenses}
+        />
 
-      <OrdersList
-        period={period}
-        orders={filteredOrders}
-        onDeleted={loadOrders}
-      />
+      </div>
+
+
+
+      <Tabs
+        defaultValue="orders"
+        className="space-y-4"
+      >
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="orders">
+            Orders
+          </TabsTrigger>
+
+          <TabsTrigger value="expenses">
+            Expenses
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="orders">
+          <OrdersList
+            period={period}
+            orders={filteredOrders}
+            onDeleted={loadOrders}
+          />
+        </TabsContent>
+
+        <TabsContent value="expenses">
+          <ExpensesList
+            expenses={expenses}
+          />
+        </TabsContent>
+      </Tabs>
     </main>
   )
 }
