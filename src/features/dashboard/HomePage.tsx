@@ -153,7 +153,7 @@ export default function HomePage() {
 
       <SummaryCards orders={filteredOrders} />
 
-      <div className="gap-3">
+      <div className="grid grid-cols-2 gap-3">
         <NewOrderForm
           onOrderCreated={loadOrders}
         />

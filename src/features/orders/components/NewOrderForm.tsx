@@ -19,6 +19,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+
 
 import {
   createOrder,
@@ -40,7 +48,9 @@ function calculateSubtotal(
 
 export default function NewOrderForm({
   onOrderCreated,
-}: NewOrderFormProps) {  
+}: NewOrderFormProps) {
+
+  const [open, setOpen] = useState(false)
   
   const [services, setServices] = useState<Service[]>([])
 
@@ -195,132 +205,149 @@ export default function NewOrderForm({
   }
 
   return (
-    <Card className="p-5">
-      <h2 className="text-lg font-semibold">
-        New Order
-      </h2>
+    <Dialog
+      open={open}
+      onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button
+          variant="outline"
+          className="w-full"
+        >
+          + Order
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>
+            New Order
+          </DialogTitle>
+        </DialogHeader>
 
-      <div className="space-y-1">
-        <Input
-          placeholder="Customer name (optional)"
-          value={customerName}
-          onChange={(e) =>
-            setCustomerName(e.target.value)
-          }
-        />
+        {/* <Card className="p-5"> */}
 
-        <Input
-          type="date"
-          value={orderDate}
-          onChange={(e) =>
-            setOrderDate(e.target.value)
-          }
-        />
-      </div>
-
-      {items.map((item, index) => {
-        const calculated = calculatedItems.find(
-          (c) => c.serviceId === item.serviceId
-        )
-
-        return (
-          <div
-            key={index}
-            className="space-y-1 space-x-1 rounded-xl border p-4"
-          >
-
-            <div className="flex space-x-1">
-
-            <Select
-              value={item.serviceId}
-              onValueChange={(value) =>
-                updateItem(index, "serviceId", value)
-              }
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select Service" />
-              </SelectTrigger>
-
-              <SelectContent>
-                {services.map((service) => (
-                  <SelectItem
-                    key={service.id}
-                    value={service.id}
-                  >
-                    {service.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
+          <div className="space-y-1">
             <Input
-              type="number"
-              placeholder="Quantity"
-              min={1}
-              value={item.quantity}
+              placeholder="Customer name (optional)"
+              value={customerName}
               onChange={(e) =>
-                updateItem(
-                  index,
-                  "quantity",
-                  e.target.value === ""
-                    ? ""
-                    : Number(e.target.value)
-                )
+                setCustomerName(e.target.value)
               }
             />
-            </div>
 
-            <div className="flex justify-between items-center px-1">
-              <span>Subtotal</span>
+            <Input
+              type="date"
+              value={orderDate}
+              onChange={(e) =>
+                setOrderDate(e.target.value)
+              }
+            />
+          </div>
 
-              <div className="space-x-1">
-              <span className="font-semibold">
-                {calculated
-                  ? `Rp${calculated.subtotal.toLocaleString("id-ID")}`
-                  : "—"}
-              </span>
-              {items.length > 1 && (
-                <Button
-                  variant="destructive"
-                  onClick={() =>
-                    removeItem(index)
+          {items.map((item, index) => {
+            const calculated = calculatedItems.find(
+              (c) => c.serviceId === item.serviceId
+            )
+
+            return (
+              <div
+                key={index}
+                className="space-y-1 space-x-1 rounded-xl border p-4"
+              >
+
+                <div className="flex space-x-1">
+
+                <Select
+                  value={item.serviceId}
+                  onValueChange={(value) =>
+                    updateItem(index, "serviceId", value)
                   }
                 >
-                  <Trash2 />
-                </Button>
-              )}
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select Service" />
+                  </SelectTrigger>
+
+                  <SelectContent>
+                    {services.map((service) => (
+                      <SelectItem
+                        key={service.id}
+                        value={service.id}
+                      >
+                        {service.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <Input
+                  type="number"
+                  placeholder="Quantity"
+                  min={1}
+                  value={item.quantity}
+                  onChange={(e) =>
+                    updateItem(
+                      index,
+                      "quantity",
+                      e.target.value === ""
+                        ? ""
+                        : Number(e.target.value)
+                    )
+                  }
+                />
+                </div>
+
+                <div className="flex justify-between items-center px-1">
+                  <span>Subtotal</span>
+
+                  <div className="space-x-1">
+                  <span className="font-semibold">
+                    {calculated
+                      ? `Rp${calculated.subtotal.toLocaleString("id-ID")}`
+                      : "—"}
+                  </span>
+                  {items.length > 1 && (
+                    <Button
+                      variant="destructive"
+                      onClick={() =>
+                        removeItem(index)
+                      }
+                    >
+                      <Trash2 />
+                    </Button>
+                  )}
+
+                  </div>
+                </div>
 
               </div>
+            )
+          })}
+
+          <Button
+            variant="outline"
+            onClick={addItem}
+          >
+            + Add Service
+          </Button>
+
+          <div className="rounded-xl bg-muted p-4">
+            <div className="flex justify-between text-lg font-bold">
+              <span>Total</span>
+
+              <span>
+                Rp{total.toLocaleString("id-ID")}
+              </span>
             </div>
-
           </div>
-        )
-      })}
-
-      <Button
-        variant="outline"
-        onClick={addItem}
-      >
-        + Add Service
-      </Button>
-
-      <div className="rounded-xl bg-muted p-4">
-        <div className="flex justify-between text-lg font-bold">
-          <span>Total</span>
-
-          <span>
-            Rp{total.toLocaleString("id-ID")}
-          </span>
-        </div>
-      </div>
 
 
-      <Button
-        disabled={isSaving}
-        onClick={handleSave}
-      >
-        {isSaving ? "Saving..." : "Save Order"}
-      </Button>
-    </Card>
+          <Button
+            disabled={isSaving}
+            onClick={handleSave}
+          >
+            {isSaving ? "Saving..." : "Save Order"}
+          </Button>
+        {/* </Card> */}
+      </DialogContent>
+    </Dialog>
   )
 }

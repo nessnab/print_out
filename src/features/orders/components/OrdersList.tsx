@@ -42,8 +42,6 @@ export default function OrdersList({
       dateStyle: "medium",
     }).format(new Date(date))
   }
-  console.log(orders)
-
 
   async function handleDelete(id: string) {
     try {
@@ -64,9 +62,9 @@ export default function OrdersList({
 
   return (
     <Card className="p-5 space-y-3">
-      <h2 className="text-lg font-semibold">
+      {/* <h2 className="text-lg font-semibold">
         {titles[period]}
-      </h2>
+      </h2> */}
 
       {orders.length === 0 && (
         <p>No orders yet.</p>

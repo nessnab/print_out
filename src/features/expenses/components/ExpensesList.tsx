@@ -1,8 +1,4 @@
-import { useEffect, useState } from "react"
 import { Card } from "@/components/ui/card"
-
-import { getExpenses } from "../api"
-import type { Expense } from "@/types/expense"
 
 type Props = {
   expenses: any[],
@@ -11,6 +7,12 @@ type Props = {
 export default function ExpensesList({
   expenses,
 }: Props) {
+
+  function formatDate(date: string) {
+    return new Intl.DateTimeFormat("id-ID", {
+      dateStyle: "medium",
+    }).format(new Date(date))
+  }
 
   return (
     <div className="space-y-3">
@@ -25,22 +27,25 @@ export default function ExpensesList({
           key={expense.id}
           className="space-y-2 p-4"
         >
-          <div className="flex items-center justify-between">
-            <h3 className="font-semibold">
-              {expense.description}
-            </h3>
+          <div className="flex justify-between border-b pb-2">
+            <div>
+              <p className="font-medium">
+                {expense.description}
+              </p>
 
-            <span className="font-bold">
-              Rp
-              {Number(
-                expense.amount
-              ).toLocaleString("id-ID")}
-            </span>
+              <p className="text-xs text-muted-foreground">
+                {formatDate(expense.expense_date)}
+              </p>
+
+            </div>
+              <p className="font-semibold">
+                Rp
+                {Number(
+                  expense.amount
+                ).toLocaleString("id-ID")}
+              </p>
           </div>
 
-          <p className="text-sm text-muted-foreground">
-            {expense.expense_date}
-          </p>
         </Card>
       ))}
     </div>
