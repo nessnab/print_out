@@ -1,20 +1,52 @@
 type Props = {
   expenses: any[]
   period: Period
+  onDeleted: () => void
 }
 
-import { Card } from "@/components/ui/card"
 import type { Period } from "@/types/period"
+import { deleteExpense } from "../api"
+import { Card } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Trash2 } from "lucide-react"
+import { toast } from "sonner"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 export default function ExpensesList({
   expenses,
-  period
+  period,
+  onDeleted
 }: Props) {
 
   function formatDate(date: string) {
     return new Intl.DateTimeFormat("id-ID", {
       dateStyle: "medium",
     }).format(new Date(date))
+  }
+
+  async function handleDelete(id: string) {
+    try {
+      await deleteExpense(id)
+
+      toast.success("Expense deleted")
+
+      onDeleted()
+
+    } catch (err) {
+      console.error(err)
+
+      toast.error("Failed to delete expense")
+    }
   }
 
   return (
@@ -44,7 +76,7 @@ export default function ExpensesList({
             Rp{Number(expense.amount).toLocaleString("id-ID")}
           </p>
 
-          {/* <AlertDialog>
+          <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button
                 variant="destructive"
@@ -57,13 +89,13 @@ export default function ExpensesList({
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>
-                  Delete this order?
+                  Delete this expense?
                 </AlertDialogTitle>
 
                 <AlertDialogDescription>
                   This action cannot be undone.
                   <br />
-                  All services in this order will also be deleted.
+                  {/* All services in this order will also be deleted. */}
                 </AlertDialogDescription>
               </AlertDialogHeader>
 
@@ -74,14 +106,14 @@ export default function ExpensesList({
 
                 <AlertDialogAction
                   onClick={() =>
-                    handleDelete(order.id)
+                    handleDelete(expense.id)
                   }
                 >
                   Delete
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
-          </AlertDialog> */}
+          </AlertDialog>
 
           </div>
         </div>

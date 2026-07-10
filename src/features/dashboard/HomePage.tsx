@@ -241,6 +241,7 @@ export default function HomePage() {
           <ExpensesList
             expenses={filteredExpenses}
             period={period}
+            onDeleted={loadExpenses}
           />
         </TabsContent>
       </Tabs>

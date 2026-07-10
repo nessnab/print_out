@@ -30,3 +30,12 @@ export async function createExpense(
 
   return data
 }
+
+export async function deleteExpense(orderId: string) {
+  const { error } = await supabase
+    .from("expenses")
+    .delete()
+    .eq("id", orderId)
+
+  if (error) throw error
+}
