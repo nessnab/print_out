@@ -86,7 +86,7 @@ export default function OrdersList({
             </p>
           </div>
           <div className="flex items-center gap-2">
-          <p className="font-semibold">
+          <p className="font-semibold text-emerald-600">
             Rp{Number(order.total).toLocaleString("id-ID")}
           </p>
 

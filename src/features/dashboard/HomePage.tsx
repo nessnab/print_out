@@ -35,18 +35,18 @@ import {
 
 export default function HomePage() {
   const [orders, setOrders] = useState<any[]>([])
-  const [expenses, setExpenses] = useState<Expense[]>([])
+  const [expenses, setExpenses] = useState<any[]>([])
   const [period, setPeriod] = useState<Period>("today")
 
   useEffect(() => {
     loadOrders()
   }, [])
     useState<Period>("today")
-
-  useEffect(() => {
+    
+    useEffect(() => {
     loadOrders()
   }, [])
-
+  
   async function loadOrders() {
     try {
       const data = await getOrders()
@@ -69,7 +69,7 @@ export default function HomePage() {
     }
   }
 
-  // Filter orders based on the selected period
+  // Filter orders & expenses based on the selected period
   const now = new Date()
 
   const filteredOrders = orders.filter(
@@ -95,6 +95,37 @@ export default function HomePage() {
             orderDate.getMonth() ===
               now.getMonth() &&
             orderDate.getFullYear() ===
+              now.getFullYear()
+          )
+
+        case "all":
+          return true
+      }
+    }
+  )
+  const filteredExpenses = expenses.filter(
+    (expense) => {
+      const expenseDate = new Date(expense.expense_date)
+
+      switch (period) {
+        case "today":
+          return (
+            expenseDate.toDateString() ===
+            now.toDateString()
+          )
+
+        case "week": {
+          const weekAgo = new Date()
+          weekAgo.setDate(now.getDate() - 7)
+
+          return expenseDate >= weekAgo
+        }
+
+        case "month":
+          return (
+            expenseDate.getMonth() ===
+              now.getMonth() &&
+            expenseDate.getFullYear() ===
               now.getFullYear()
           )
 
@@ -190,7 +221,8 @@ export default function HomePage() {
 
         <TabsContent value="expenses">
           <ExpensesList
-            expenses={expenses}
+            expenses={filteredExpenses}
+            period={period}
           />
         </TabsContent>
       </Tabs>

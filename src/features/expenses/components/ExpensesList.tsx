@@ -1,11 +1,14 @@
-import { Card } from "@/components/ui/card"
-
 type Props = {
-  expenses: any[],
+  expenses: any[]
+  period: Period
 }
+
+import { Card } from "@/components/ui/card"
+import type { Period } from "@/types/period"
 
 export default function ExpensesList({
   expenses,
+  period
 }: Props) {
 
   function formatDate(date: string) {
@@ -15,39 +18,74 @@ export default function ExpensesList({
   }
 
   return (
-    <div className="space-y-3">
+    
+    <Card className="p-5 space-y-3">
       {expenses.length === 0 && (
-        <Card className="p-6 text-center text-muted-foreground">
-          No expenses yet.
-        </Card>
+        <p>No expenses yet.</p>
       )}
 
       {expenses.map((expense) => (
-        <Card
+        
+        <div
           key={expense.id}
-          className="space-y-2 p-4"
+          className="flex justify-between border-b pb-2"
         >
-          <div className="flex justify-between border-b pb-2">
-            <div>
-              <p className="font-medium">
-                {expense.description}
-              </p>
+          <div>
+            <p className="font-medium">
+              {expense.description}
+            </p>
 
-              <p className="text-xs text-muted-foreground">
-                {formatDate(expense.expense_date)}
-              </p>
-
-            </div>
-              <p className="font-semibold">
-                Rp
-                {Number(
-                  expense.amount
-                ).toLocaleString("id-ID")}
-              </p>
+            <p className="text-xs text-muted-foreground">
+              {formatDate(expense.expense_date)}
+            </p>
           </div>
+          <div className="flex items-center gap-2">
+          <p className="font-semibold text-destructive">
+            Rp{Number(expense.amount).toLocaleString("id-ID")}
+          </p>
 
-        </Card>
+          {/* <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                variant="destructive"
+                size="icon"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </AlertDialogTrigger>
+
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  Delete this order?
+                </AlertDialogTitle>
+
+                <AlertDialogDescription>
+                  This action cannot be undone.
+                  <br />
+                  All services in this order will also be deleted.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+
+              <AlertDialogFooter>
+                <AlertDialogCancel>
+                  Cancel
+                </AlertDialogCancel>
+
+                <AlertDialogAction
+                  onClick={() =>
+                    handleDelete(order.id)
+                  }
+                >
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog> */}
+
+          </div>
+        </div>
       ))}
-    </div>
+    </Card>
   )
 }
