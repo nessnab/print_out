@@ -1,11 +1,9 @@
 import { supabase } from "@/lib/supabase"
-
-type CreateOrderInput = {
-  customer_name: string
-  order_date: string
-  total: number
-  is_paid: boolean
-}
+import type {
+  CreateOrderInput,
+  CreateOrderItemInput,
+  OrderItemWithService
+} from "@/types/order"
 
 export async function createOrder(input: CreateOrderInput) {
   const { data, error } = await supabase
@@ -17,14 +15,6 @@ export async function createOrder(input: CreateOrderInput) {
   if (error) throw error
 
   return data
-}
-
-type CreateOrderItemInput = {
-  order_id: string
-  service_id: string
-  quantity: number
-  unit_price: number
-  subtotal: number
 }
 
 export async function createOrderItems(
@@ -43,6 +33,25 @@ export async function getOrders() {
     .select("*")
     .order("order_date", { ascending: false })
     .order("created_at", { ascending: false })
+
+  if (error) throw error
+
+  return data
+}
+
+
+export async function getOrderItems(
+  orderId: string
+): Promise<OrderItemWithService[]> {
+  const { data, error } = await supabase
+    .from("order_items")
+    .select(`
+      *,
+      services (
+        name
+      )
+    `)
+    .eq("order_id", orderId)
 
   if (error) throw error
 
