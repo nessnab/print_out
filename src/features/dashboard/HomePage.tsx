@@ -135,6 +135,19 @@ export default function HomePage() {
     }
   )
 
+  // Calculate revenue, expense, and profit
+  const revenue = filteredOrders.reduce(
+    (sum, order) => sum + Number(order.total),
+    0
+  )
+
+  const expense = filteredExpenses.reduce(
+    (sum, item) => sum + Number(item.amount),
+    0
+  )
+
+  const profit = revenue - expense
+
   return (
     <main className="mx-auto min-h-screen max-w-md space-y-6 bg-zinc-50 p-4">
       <header className="flex items-center justify-between">
@@ -182,7 +195,12 @@ export default function HomePage() {
       </header>
 
 
-      <SummaryCards orders={filteredOrders} />
+      <SummaryCards
+        // orders={filteredOrders}
+        revenue={revenue}
+        expense={expense}
+        profit={profit}
+      />
 
       <div className="grid grid-cols-2 gap-3">
         <NewOrderForm
