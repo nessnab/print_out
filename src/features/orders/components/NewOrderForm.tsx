@@ -210,7 +210,7 @@ export default function NewOrderForm({
       onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
-          variant="outline"
+          // variant="outline"
           className="w-full"
         >
           + Order

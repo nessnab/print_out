@@ -90,7 +90,7 @@ export default function NewExpenseDialog({
     >
       <DialogTrigger asChild>
         <Button
-          variant="outline"
+          // variant="outline"
           className="w-full"
         >
           + Expense
