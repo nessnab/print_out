@@ -7,13 +7,13 @@ import { useEffect, useState } from "react"
 
 import SummaryCards from "@/features/dashboard/components/SummaryCards"
 
-import NewOrderForm from "../orders/components/NewOrderForm"
-import OrdersList from "../orders/components/OrdersList"
+import NewOrderForm from "../features/orders/components/NewOrderForm"
+import OrdersList from "../features/orders/components/OrdersList"
 
-import NewExpenseDialog from "../expenses/components/NewExpenseDialog"
+import NewExpenseDialog from "../features/expenses/components/NewExpenseDialog"
 import ExpensesList from "@/features/expenses/components/ExpensesList"
 
-import SettingsSheet from "../services/SettingsSheet"
+import SettingsSheet from "../features/services/SettingsSheet"
 
 import { getOrders } from "@/features/orders/api"
 import { getExpenses } from "@/features/expenses/api"
