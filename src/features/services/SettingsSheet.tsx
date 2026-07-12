@@ -29,6 +29,8 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog" 
 
+import { logout } from "@/features/auth/api"
+
 export default function SettingsSheet() {
   const [services, setServices] = useState<Service[]>([])
   const [editedServices, setEditedServices] = useState<Service[]>([])
@@ -145,7 +147,7 @@ export default function SettingsSheet() {
           </SheetTitle>
         </SheetHeader>
 
-        <div className="min-h-0 flex-1 overflow-y-auto py-4">
+        <div className="min-h-0 flex-1 overflow-y-auto">
             <Card className="space-y-1 p-4">
               <h2 className="text-base font-semibold">
                 Add New Service
@@ -299,6 +301,14 @@ export default function SettingsSheet() {
             Save Changes
           </Button>
         </div>
+
+        <Button
+          variant="destructive"
+          className="w-full"
+          onClick={logout}
+        >
+          Logout
+        </Button>
 
       </SheetContent>
     </Sheet>
