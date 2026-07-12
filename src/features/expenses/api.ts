@@ -1,9 +1,18 @@
 import { supabase } from "@/lib/supabase"
 
 export async function getExpenses() {
+  // const { data, error } = await supabase
+  //   .from("expenses")
+  //   .select("*")
+  
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  
   const { data, error } = await supabase
     .from("expenses")
     .select("*")
+    .eq("user_id", user!.id)
     .order("expense_date", { ascending: false })
     .order("created_at", { ascending: false })
 
@@ -19,12 +28,24 @@ export async function createExpense(
     expense_date: string
   }
 ) {
-  const { data, error } =
-    await supabase
-      .from("expenses")
-      .insert(expense)
-      .select()
-      .single()
+  // const { data, error } =
+  //   await supabase
+  //     .from("expenses")
+  //     .insert(expense)
+  //     .select()
+  //     .single()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  const { data, error } = await supabase
+    .from("expenses")
+    .insert({
+      ...expense,
+      user_id: user!.id,
+    })
+    .select()
+    .single()
 
   if (error) throw error
 

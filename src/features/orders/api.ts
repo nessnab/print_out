@@ -5,16 +5,30 @@ import type {
   OrderItemWithService
 } from "@/types/order"
 
-export async function createOrder(input: CreateOrderInput) {
-  const { data, error } = await supabase
-    .from("orders")
-    .insert(input)
-    .select()
-    .single()
+export async function createOrder(order: CreateOrderInput) {
+  // const { data, error } = await supabase
+  //   .from("orders")
+  //   .insert(input)
+  //   .select()
+  //   .single()
 
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  const { data, error } = await supabase
+  .from("orders")
+  .insert({
+    ...order,
+    user_id: user!.id,
+  })
+  .select()
+  .single()
+  
   if (error) throw error
 
   return data
+  
 }
 
 export async function createOrderItems(
@@ -28,9 +42,18 @@ export async function createOrderItems(
 }
 
 export async function getOrders() {
+  // const { data, error } = await supabase
+  //   .from("orders")
+  //   .select("*")
+  
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
   const { data, error } = await supabase
-    .from("orders")
+  .from("orders")
     .select("*")
+    .eq("user_id", user!.id)
     .order("order_date", { ascending: false })
     .order("created_at", { ascending: false })
 

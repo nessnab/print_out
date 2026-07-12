@@ -2,11 +2,21 @@ import type { Service } from "@/types/service"
 import { supabase } from "@/lib/supabase"
 
 export async function getServices() {
+  // const { data, error } = await supabase
+  //   .from("services")
+  //   .select("*")
+  //   .order("name")
+  
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  
   const { data, error } = await supabase
     .from("services")
     .select("*")
+    .eq("user_id", user!.id)
     .eq("is_active", true)
-    .order("name")
+    .order("created_at", { ascending: false })
 
   if (error) throw error
 
@@ -21,11 +31,25 @@ export async function createService(
     // unit: "page" | "item"
   }
 ) {
+  // const { data, error } = await supabase
+  //   .from("services")
+  //   .insert({
+  //     ...service,
+  //     is_active: true,
+  //   })
+  //   .select()
+  //   .single()
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
   const { data, error } = await supabase
     .from("services")
     .insert({
       ...service,
       is_active: true,
+      user_id: user!.id,
     })
     .select()
     .single()
