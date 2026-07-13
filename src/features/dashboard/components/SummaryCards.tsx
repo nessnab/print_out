@@ -1,49 +1,43 @@
 type Props = {
-  // orders: any[]
   revenue: number
   expense: number
   profit: number
 }
+
+import { Wallet, Receipt, TrendingUp } from "lucide-react"
+
 export default function SummaryCards({
-  // orders,
   revenue,
   expense,
   profit
 }: Props) {
-  // const revenue = orders.reduce(
-  //   (sum, order) => sum + Number(order.total),
-  //   0
-  // )
-
-  // const orderCount = orders.length
-
-  // const unpaidCount = orders.filter(
-  //   (order) => !order.is_paid
-  // ).length
 
   return (
     <div className="grid grid-cols-3 gap-3">
       <div className="rounded-xl border bg-white p-4">
+        <Wallet></Wallet>
         <p className="text-xs text-muted-foreground">
           Revenue
         </p>
 
-        <p className="mt-1 text-lg font-bold">
+        <p className="mt-1 text-lg font-bold text-emerald-600">
           Rp{revenue.toLocaleString("id-ID")}
         </p>
       </div>
 
       <div className="rounded-xl border bg-white p-4">
+        <Receipt></Receipt>
         <p className="text-xs text-muted-foreground">
           Expenses
         </p>
 
-        <p className="mt-1 text-lg font-bold">
+        <p className="mt-1 text-lg font-bold text-destructive">
           Rp{expense.toLocaleString("id-ID")}
         </p>
       </div>
 
       <div className="rounded-xl border bg-white p-4">
+        <TrendingUp></TrendingUp>
         <p className="text-xs text-muted-foreground">
           Profit
         </p>

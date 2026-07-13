@@ -15,6 +15,7 @@ import ExpensesList from "@/features/expenses/components/ExpensesList"
 
 import SettingsSheet from "../features/services/SettingsSheet"
 
+import { useAuthContext } from "@/features/auth/AuthProvider"
 import { getOrders } from "@/features/orders/api"
 import { getExpenses } from "@/features/expenses/api"
 
@@ -34,6 +35,7 @@ import {
 } from "@/components/ui/tabs"
 
 export default function HomePage() {
+  const { user } = useAuthContext()
   const [orders, setOrders] = useState<any[]>([])
   const [expenses, setExpenses] = useState<any[]>([])
   const [period, setPeriod] = useState<Period>("today")
@@ -56,7 +58,7 @@ export default function HomePage() {
     }
   }
 
-    useEffect(() => {
+  useEffect(() => {
     loadExpenses()
   }, [])
 
@@ -158,6 +160,9 @@ export default function HomePage() {
 
           <p className="text-sm text-muted-foreground">
             Print Shop Dashboard
+          </p>
+          <p className="text-sm text-muted-foreground capitalize">
+            Welcome, {user?.email.split("@")[0]}!
           </p>
         </div>
         <div className="flex">

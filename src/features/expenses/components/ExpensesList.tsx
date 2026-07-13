@@ -53,7 +53,10 @@ export default function ExpensesList({
     
     <Card className="p-5 space-y-3">
       {expenses.length === 0 && (
-        <p>No expenses yet.</p>
+        <div className="text-center">
+          <p>No expenses yet.</p>
+          <p className="text-gray-400">Let's record your first expense.</p>
+        </div>
       )}
 
       {expenses.map((expense) => (

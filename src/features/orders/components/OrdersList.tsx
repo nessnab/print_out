@@ -17,7 +17,10 @@ export default function OrdersList({
     <Card className="p-5 space-y-1">
 
       {orders.length === 0 && (
-        <p>No orders yet.</p>
+        <div className="text-center">
+          <p>No orders yet.</p>
+          <p className="text-gray-400">Create your first order to get started.</p>
+        </div>
       )}
 
       {orders.map((order) => (
