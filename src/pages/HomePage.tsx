@@ -162,7 +162,7 @@ export default function HomePage() {
             Print Shop Dashboard
           </p>
           <p className="text-sm text-muted-foreground capitalize">
-            Welcome, {user?.email.split("@")[0]}!
+            Welcome, {user?.email?.split("@")[0]}!
           </p>
         </div>
         <div className="flex">
@@ -236,7 +236,6 @@ export default function HomePage() {
 
         <TabsContent value="orders">
           <OrdersList
-            period={period}
             orders={filteredOrders}
             onDeleted={loadOrders}
           />
@@ -245,7 +244,6 @@ export default function HomePage() {
         <TabsContent value="expenses">
           <ExpensesList
             expenses={filteredExpenses}
-            period={period}
             onDeleted={loadExpenses}
           />
         </TabsContent>

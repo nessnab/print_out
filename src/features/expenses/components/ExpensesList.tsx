@@ -1,10 +1,8 @@
 type Props = {
   expenses: any[]
-  period: Period
   onDeleted: () => void
 }
 
-import type { Period } from "@/types/period"
 import { deleteExpense } from "../api"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -24,7 +22,6 @@ import {
 
 export default function ExpensesList({
   expenses,
-  period,
   onDeleted
 }: Props) {
 

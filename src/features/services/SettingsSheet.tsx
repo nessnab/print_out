@@ -32,14 +32,12 @@ import {
 import { logout } from "@/features/auth/api"
 
 export default function SettingsSheet() {
-  const [services, setServices] = useState<Service[]>([])
   const [editedServices, setEditedServices] = useState<Service[]>([])
 
   const [newService, setNewService] = useState({
     name: "",
-    price: Number,
-    every: Number,
-    // unit: "page",
+    price: "" as number | "",
+    every: "" as number | "",
   })
 
   useEffect(() => {
@@ -49,7 +47,6 @@ export default function SettingsSheet() {
   async function loadServices() {
     try {
       const data = await getServices()
-      setServices(data)
       setEditedServices(data)
     } catch (err) {
       console.error(err)
@@ -85,7 +82,7 @@ export default function SettingsSheet() {
         "Settings updated!"
       )
       
-      setServices(editedServices)
+      setEditedServices(editedServices)
       await loadServices()
 
     } catch (err) {
@@ -97,7 +94,10 @@ export default function SettingsSheet() {
     }
     window.location.reload()
   }
+  
+
   async function handleDeactivate(id: number) {
+    
     try {
       await deactivateService(id)
       await loadServices()
@@ -113,22 +113,37 @@ export default function SettingsSheet() {
   
   async function handleCreateService() {
     try {
-      await createService(newService)
+      const { name, price, every } = newService
+
+      if (
+        name.trim() === "" ||
+        price === "" ||
+        every === ""
+      ) {
+        toast.error("Please complete all fields.")
+        return
+      }
+
+      await createService({
+        name,
+        price,
+        every,
+      })
+
+      toast.success("Service added!")
+
       await loadServices()
-      
+
       setNewService({
         name: "",
-        price: Number,
-        every: Number,
+        price: "",
+        every: "",
       })
-      
-      window.location.reload()
-      toast.success("Service added")
-
-    } catch (error) {
-      console.error(error)
-      toast.error("Failed to add service")
+    } catch (err) {
+      console.error(err)
+      toast.error("Failed to add service.")
     }
+    window.location.reload()
   }
 
   return (

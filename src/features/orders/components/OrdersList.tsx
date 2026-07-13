@@ -1,15 +1,12 @@
 type OrdersListProps = {
   orders: any[]
-  period: Period
   onDeleted: () => void
 }
-import type { Period } from "@/types/period"
 import OrderDetailDialog from "./OrderDetailDialog"
 import { Card } from "@/components/ui/card"
 
 export default function OrdersList({
   orders,
-  period,
   onDeleted
 }: OrdersListProps) {
 

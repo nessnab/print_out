@@ -3,7 +3,6 @@ interface NewOrderFormProps {
 }
 
 import { useEffect, useMemo, useState } from "react"
-import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Trash2 } from "lucide-react"
@@ -34,7 +33,7 @@ import {
 } from "@/features/orders/api"
 
 type OrderItem = {
-  serviceId: string
+  serviceId: number | ""
   quantity: number | ""
 }
 
@@ -115,7 +114,6 @@ export default function NewOrderForm({
     )
   }
 
-  // ⭐ One source of truth
   const calculatedItems = useMemo(() => {
     return items
       .map((item) => {
@@ -126,16 +124,16 @@ export default function NewOrderForm({
         if (!service || item.quantity === "") {
           return null
         }
-
-        return {
-          ...item,
-          service,
-          subtotal: calculateSubtotal(
-            item.quantity,
-            service.price,
-            service.every
-          ),
-        }
+      return {
+        ...item,
+        quantity: Number(item.quantity),
+        service,
+        subtotal: calculateSubtotal(
+          Number(item.quantity),
+          service.price,
+          service.every
+        ),
+      }
       })
       .filter(
         (item): item is NonNullable<typeof item> =>
@@ -257,7 +255,7 @@ export default function NewOrderForm({
                 <div className="flex space-x-1">
 
                 <Select
-                  value={item.serviceId}
+                  value={item.serviceId?.toString() ?? ""}
                   onValueChange={(value) =>
                     updateItem(index, "serviceId", value)
                   }
@@ -270,7 +268,7 @@ export default function NewOrderForm({
                     {services.map((service) => (
                       <SelectItem
                         key={service.id}
-                        value={service.id}
+                        value={service.id?.toString() ?? ""}
                       >
                         {service.name}
                       </SelectItem>

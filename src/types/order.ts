@@ -25,7 +25,7 @@ export interface CreateOrderInput {
 
 export interface CreateOrderItemInput {
   order_id: string
-  service_id: string
+  service_id: number
   quantity: number
   unit_price: number
   subtotal: number
