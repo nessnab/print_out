@@ -13,7 +13,7 @@ export default function SummaryCards({
 }: Props) {
 
   return (
-    <div className="grid grid-cols-3 gap-3">
+    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
       <div className="rounded-xl border bg-white p-4">
         <Wallet></Wallet>
         <p className="text-xs text-muted-foreground">
