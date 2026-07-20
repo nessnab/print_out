@@ -49,18 +49,16 @@ Row Level Security (RLS)
 ## Installation
 
 ```bash
-git clone <repo>
+git clone https://github.com/nessnab/print_out.git
 
 npm install
 
 npm run dev
 
+```
 
 ---
 
-## Environment Variables
-
-```md
 ## Environment Variables
 
 Create a `.env` file:
