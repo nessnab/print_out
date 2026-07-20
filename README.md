@@ -4,10 +4,11 @@ A modern dashboard for small print shops to manage orders, services, expenses, a
 
 Built with React, TypeScript, Tailwind CSS, shadcn/ui, and Supabase.
 
+## Live Demo: https://print-out.vercel.app/
+
 ## Preview
 
-![Preview](./public/screenshots/prev_1.png)
-![Preview](./public/screenshots/prev_2.png)
+<img src="./public/screenshots/prev_1.png" alt="Preview" height="500">
 
 ## Features
 
@@ -73,12 +74,12 @@ VITE_SUPABASE_ANON_KEY=YOUR_KEY
 
 ## Screenshots
 
-![Login](./public/screenshots/login.png)
-![Dashboard](./public/screenshots/prev_1.png)
-![New Order](./public/screenshots/new_order.png)
-![Order Detail](./public/screenshots/order_detail.png)
-![Settings](./public/screenshots/settings.png)
-![New Expense](./public/screenshots/new_expense.png)
+<img src="./public/screenshots/login.png" alt="Login" height="500">
+<img src="./public/screenshots/prev_1.png" alt="Preview" height="500">
+<img src="./public/screenshots/new_order.png" alt="Add Order" height="500">
+<img src="./public/screenshots/order_detail.png" alt="Order Detail" height="500">
+<img src="./public/screenshots/settings.png" alt="Settings" height="500">
+<img src="./public/screenshots/new_expense.png" alt="Add Expense" height="500">
 
 ## Future Improvements
 
